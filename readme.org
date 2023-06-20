@@ -1,21 +1,37 @@
 #+title: Pond
 
-* manually doing the pipe
 
-** dir structure
+* dir structure
 
-+ ~target_genomes.txt~
-+ ~filter_ids.txt~
-+ genomes/
-  + g1/
-    + ~g1.faa~
-    + ~g1.filtered.faa~
-    + ~other?~
-    + iscan_pfam/
-      + ~.xml~
-      + ~.tsv~
-      + ~other?~
-    + iscan_all/
-      + ~.xml~
-      + ~.tsv~
-+ scripts/
+** ~target_genomes.txt~
+** ~filter_ids.txt~
+** genomes/
+*** g1/
+**** ~g1.faa~
+**** ~g1.filtered.faa~
+**** ~.other~
+**** iscan_pfam/
+***** ~.xml~
+***** ~.tsv~
+***** ~.other~
+**** iscan_all/
+***** ~.xml~
+***** ~.tsv~
+***** ~.other~
+other formats are hidden using a leading ~.~
+** scripts/
+
+* manually running the filter
+
+#+begin_src shell
+GENOME="GCF_001993155.1" && scripts/write_any.R "genomes/$GENOME/iscan_pfam/$GENOME.faa.tsv" filter_ids.txt "genomes/$GENOME/$GENOME.faa"
+
+fasta_grep --tab=genomes/GCF_001993155.1/iscan_pfam/GCF_001993155.1.faa.tsv.hits genomes/GCF_001993155.1/GCF_001993155.1.faa >| genomes/GCF_001993155.1/GCF_001993155.1.filtered.faa
+#+end_src
+
+* manually hidding the files
+
+#+begin_src shell
+fd iscan | parallel mv {} {//}/iscan_pfam
+fd '\.faa\.' */iscan* | sed '/xml/ d; /tsv/ d' | parallel  mv {} {//}/.{/}
+#+end_src
