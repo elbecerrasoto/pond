@@ -1,0 +1,21 @@
+#+title: Pond
+
+* manually doing the pipe
+
+** dir structure
+
++ ~target_genomes.txt~
++ ~filter_ids.txt~
++ genomes/
+  + g1/
+    + ~g1.faa~
+    + ~g1.filtered.faa~
+    + ~other?~
+    + iscan_pfam/
+      + ~.xml~
+      + ~.tsv~
+      + ~other?~
+    + iscan_all/
+      + ~.xml~
+      + ~.tsv~
++ scripts/
