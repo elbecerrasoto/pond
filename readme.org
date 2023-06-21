@@ -21,6 +21,16 @@
 other formats are hidden using a leading ~.~
 ** scripts/
 
+
+* manually running the all anotation
+
+#+begin_src shell
+sudo swapoff -a # bye swap
+fd -HI 'filtered.faa' | parallel -j 6 scripts/3-annotate.sh {} {//}/iscan_all/ 7 FALSE
+#+end_src
+
+
+
 * manually running the filter
 
 #+begin_src shell
