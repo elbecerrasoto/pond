@@ -34,12 +34,12 @@ then
     if [[ "$pfam_only" == "TRUE" ]]
     then
 
-        interproscan.sh --cpu $cpus --input $genome --output-dir $out_dir --disable-precalc --applications Pfam
+        interproscan.sh --cpu $cpus --input $genome --output-dir $out_dir --applications Pfam
 
     elif [[ "$pfam_only" == "FALSE" ]]
     then
 
-        interproscan.sh --cpu $cpus --input $genome --output-dir $out_dir --disable-precalc
+        interproscan.sh --cpu $cpus --input $genome --output-dir $out_dir --pathways --goterms
 
     fi
 fi

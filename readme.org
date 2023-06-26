@@ -26,7 +26,7 @@ other formats are hidden using a leading ~.~
 
 #+begin_src shell
 sudo swapoff -a # bye swap
-fd -HI 'filtered.faa' | parallel -j 6 scripts/3-annotate.sh {} {//}/iscan_all/ 7 FALSE
+fd -HI 'filtered.faa' | parallel --dry-run -j 6 scripts/3-annotate.sh {} {//}/iscan_all/ 7 FALSE
 #+end_src
 
 
@@ -42,6 +42,6 @@ fasta_grep --tab=genomes/GCF_001993155.1/iscan_pfam/GCF_001993155.1.faa.tsv.hits
 * manually hidding the files
 
 #+begin_src shell
-fd iscan | parallel mv {} {//}/iscan_pfam
-fd '\.faa\.' */iscan* | sed '/xml/ d; /tsv/ d' | parallel  mv {} {//}/.{/}
+fd iscan | parallel --dry-run mv {} {//}/iscan_pfam
+fd '\.faa\.' */iscan* | sed '/xml/ d; /tsv/ d' | parallel --dry-run mv {} {//}/.{/}
 #+end_src
