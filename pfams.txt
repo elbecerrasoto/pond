@@ -1,4 +1,3 @@
-# manually curated
 IPR006531
 IPR001826
 IPR025425
