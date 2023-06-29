@@ -39,7 +39,7 @@ then
     elif [[ "$pfam_only" == "FALSE" ]]
     then
 
-        interproscan.sh --cpu $cpus --input $genome --output-dir $out_dir --pathways --goterms
+        interproscan.sh --cpu $cpus --input $genome --output-dir $out_dir
 
     fi
 fi
