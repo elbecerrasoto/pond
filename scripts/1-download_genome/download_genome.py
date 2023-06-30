@@ -37,17 +37,32 @@ DEBUG = args.debug
 
 INCLUDE = "genome,protein,gff3"
 
-# --include string(,string)   Specify the data files to include (comma-separated).
-#                               * genome:     genomic sequence
-#                               * rna:        transcript
-#                               * protein:    amnio acid sequences
-#                               * cds:        nucleotide coding sequences
-#                               * gff3:       general feature file
-#                               * gtf:        gene transfer format
-#                               * gbff:       GenBank flat file
-#                               * seq-report: sequence report file
-#                               * none:       do not retrieve any sequence files
-#                                (default [genome])
+# Specify the data files to include (comma-separated). string(,string)
+    # * genome:     genomic sequence
+    # * rna:        transcript
+    # * protein:    amnio acid sequences
+    # * cds:        nucleotide coding sequences
+    # * gff3:       general feature file
+    # * gtf:        gene transfer format
+    # * gbff:       GenBank flat file
+    # * seq-report: sequence report file
+
+
+# ├── GCF_024145975.1
+# │   ├── GCF_024145975.1.zip
+# │   ├── ncbi_dataset
+# │   │   └── data
+# │   │       ├── assembly_data_report.jsonl
+# │   │       ├── dataset_catalog.json
+# │   │       └── GCF_024145975.1
+# │   │           ├── cds_from_genomic.fna
+# │   │           ├── GCF_024145975.1_ASM2414597v1_genomic.fna
+# │   │           ├── genomic.gbff
+# │   │           ├── genomic.gff
+# │   │           ├── genomic.gtf
+# │   │           ├── protein.faa
+# │   │           └── sequence_report.jsonl
+# │   └── README.md
 
 
 if DEBUG:
