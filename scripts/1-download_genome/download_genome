@@ -5,19 +5,24 @@
 # mamba install -y -c conda-forge ncbi-datasets-cli
 
 import argparse
+import shutil
 import subprocess as sp
 from pathlib import Path
+from shlex import join, split
+
 from icecream import ic
-from shlex import split, join
-import shutil
 
 DESCRIPTION = """Wrapper for ncbi-datasets-cli
+
+    examples:
+        ./download_genome GCF_024145975.1
 
     under the hood:
         datasets download genome accession --help
 
-    install:
+    dependencies:
         mamba install -y -c conda-forge ncbi-datasets-cli
+        mamba install -y -c conda-forge icecream
 """
 
 parser = argparse.ArgumentParser(
@@ -26,7 +31,7 @@ parser = argparse.ArgumentParser(
 parser.add_argument("genome", help="NCBI accession")
 parser.add_argument("-o", "--out-dir", default="./")
 parser.add_argument("-n", "--dry-run", action="store_true")
-parser.add_argument("-d", "--debug", action="store_true")
+parser.add_argument("--debug", action="store_true")
 args = parser.parse_args()
 
 
