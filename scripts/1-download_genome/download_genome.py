@@ -49,6 +49,7 @@ INCLUDE = "genome,protein,gff3"
 # * seq-report: sequence report file
 
 
+# Dir structure after unzip
 # ├── GCF_024145975.1
 # │   ├── GCF_024145975.1.zip
 # │   ├── ncbi_dataset
@@ -71,21 +72,26 @@ if DEBUG:
 
 if __name__ == "__main__":
     GENOME_DIR = OUT_DIR / Path(GENOME)
-    ZIP = GENOME_DIR / (GENOME + ".zip")
+    ZIP = GENOME_DIR / f"{GENOME}.zip"
 
     DATASETS = split(
         f"datasets download genome accession {GENOME} --filename {ZIP} --include {INCLUDE}"
     )
 
-    # freshen overwrite
-    UNZIP = split(f"unzip -o {ZIP} -d {GENOME_DIR}")
+    # -o overwrite -q quiet
+    UNZIP = split(f"unzip -qo {ZIP} -d {GENOME_DIR}")
 
     NESTED_DATA_DIR = GENOME_DIR / "ncbi_dataset" / "data" / GENOME
 
     TO_RM = (ZIP, GENOME_DIR / "README.md", GENOME_DIR / "ncbi_dataset")
 
+    RENAMES = (
+        (GENOME_DIR / "genomic.gff", GENOME_DIR / f"{GENOME}.gff"),
+        (GENOME_DIR / "protein.faa", GENOME_DIR / f"{GENOME}.faa"),
+    )
+
     if DEBUG:
-        ic(INCLUDE, GENOME_DIR, ZIP, DATASETS, UNZIP, NESTED_DATA_DIR, TO_RM)
+        ic(INCLUDE, GENOME_DIR, ZIP, DATASETS, UNZIP, NESTED_DATA_DIR, TO_RM, RENAMES)
 
     if not DRY:
         GENOME_DIR.mkdir(exist_ok=True)
@@ -103,6 +109,9 @@ if __name__ == "__main__":
             except IsADirectoryError:
                 shutil.rmtree(rm_target)
 
+        for irename in RENAMES:
+            shutil.move(irename[0], irename[1])
+
     else:
         print("DRY RUN\nActions that would've run:\n")
 
@@ -117,3 +126,6 @@ if __name__ == "__main__":
 
         for rm_target in TO_RM:
             print(f"rm -r {rm_target}")
+
+        for irename in RENAMES:
+            print(f"mv {irename[0]} {irename[1]}")
