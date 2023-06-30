@@ -23,14 +23,14 @@ parser = argparse.ArgumentParser(
     description=DESCRIPTION, formatter_class=argparse.RawDescriptionHelpFormatter
 )
 parser.add_argument("genome", help="NCBI accession")
-parser.add_argument("-o", "--out-dir", help="Default: genome")
+parser.add_argument("-o", "--out-dir", default="./")
 parser.add_argument("-n", "--dry-run", action="store_true")
 parser.add_argument("-d", "--debug", action="store_true")
 args = parser.parse_args()
 
 
 GENOME = args.genome
-OUT_DIR = Path(GENOME) if args.out_dir is None else Path(args.out_dir)
+OUT_DIR = Path(args.out_dir)
 
 DRY = args.dry_run
 DEBUG = args.debug
@@ -38,14 +38,14 @@ DEBUG = args.debug
 INCLUDE = "genome,protein,gff3"
 
 # Specify the data files to include (comma-separated). string(,string)
-    # * genome:     genomic sequence
-    # * rna:        transcript
-    # * protein:    amnio acid sequences
-    # * cds:        nucleotide coding sequences
-    # * gff3:       general feature file
-    # * gtf:        gene transfer format
-    # * gbff:       GenBank flat file
-    # * seq-report: sequence report file
+# * genome:     genomic sequence
+# * rna:        transcript
+# * protein:    amnio acid sequences
+# * cds:        nucleotide coding sequences
+# * gff3:       general feature file
+# * gtf:        gene transfer format
+# * gbff:       GenBank flat file
+# * seq-report: sequence report file
 
 
 # ├── GCF_024145975.1
@@ -69,20 +69,22 @@ if DEBUG:
     ic(args)
 
 if __name__ == "__main__":
-    ZIP = OUT_DIR / (GENOME + ".zip")
+    GENOME_DIR = OUT_DIR / Path(GENOME)
+    ZIP = GENOME_DIR / (GENOME + ".zip")
     DATASETS = split(
         f"datasets download genome accession {GENOME} --filename {ZIP} --include {INCLUDE}"
     )
-    UNZIP = split(f"unzip -nq {ZIP} -d {OUT_DIR}")
+    UNZIP = split(f"unzip -nq {ZIP} -d {GENOME_DIR}")
 
     if DEBUG:
+        ic(GENOME_DIR)
         ic(ZIP)
         ic(INCLUDE)
         ic(DATASETS)
         ic(UNZIP)
 
     if not DRY:
-        OUT_DIR.mkdir(parents=True, exist_ok=True)
+        GENOME_DIR.mkdir(exist_ok=True)
 
         sp.run(DATASETS, check=True)
 
@@ -93,6 +95,6 @@ if __name__ == "__main__":
 
     else:
         print("DRY RUN\nActions that would've run:\n")
-        print(f"mkdir -p {OUT_DIR}")
+        print(f"mkdir -p {GENOME_DIR}")
         print(join(DATASETS))
         print(join(UNZIP))
