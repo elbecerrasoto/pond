@@ -97,8 +97,11 @@ if __name__ == "__main__":
         for data_file in NESTED_DATA_DIR.iterdir():
             shutil.copy(data_file, GENOME_DIR)
 
-        # for rm_target in TO_RM:
-        #     shutil.rmtree(rm_target)
+        for rm_target in TO_RM:
+            try:
+                rm_target.unlink()
+            except IsADirectoryError:
+                shutil.rmtree(rm_target)
 
     else:
         print("DRY RUN\nActions that would've run:\n")
