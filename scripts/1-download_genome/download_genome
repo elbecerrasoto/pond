@@ -68,12 +68,14 @@ INCLUDE = "genome,protein,gff3"
 
 
 if DEBUG:
+    print("DEBUG")
     ic(args)
 
 if __name__ == "__main__":
     GENOME_DIR = OUT_DIR / Path(GENOME)
     ZIP = GENOME_DIR / f"{GENOME}.zip"
 
+    # --no-progressbar
     DATASETS = split(
         f"datasets download genome accession {GENOME} --filename {ZIP} --include {INCLUDE}"
     )
@@ -113,19 +115,7 @@ if __name__ == "__main__":
             shutil.move(irename[0], irename[1])
 
     else:
-        print("DRY RUN\nActions that would've run:\n")
-
-        print(f"mkdir -p {GENOME_DIR}")
+        print("DRY RUN")
 
         print(join(DATASETS))
-
         print(join(UNZIP))
-
-        for data_file in NESTED_DATA_DIR.iterdir():
-            print(f"mv {data_file} {GENOME_DIR}")
-
-        for rm_target in TO_RM:
-            print(f"rm -r {rm_target}")
-
-        for irename in RENAMES:
-            print(f"mv {irename[0]} {irename[1]}")
