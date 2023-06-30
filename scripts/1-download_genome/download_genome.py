@@ -9,6 +9,7 @@ import subprocess as sp
 from pathlib import Path
 from icecream import ic
 from shlex import split, join
+import shutil
 
 DESCRIPTION = """Wrapper for ncbi-datasets-cli
 
@@ -71,17 +72,20 @@ if DEBUG:
 if __name__ == "__main__":
     GENOME_DIR = OUT_DIR / Path(GENOME)
     ZIP = GENOME_DIR / (GENOME + ".zip")
+
     DATASETS = split(
         f"datasets download genome accession {GENOME} --filename {ZIP} --include {INCLUDE}"
     )
-    UNZIP = split(f"unzip -nq {ZIP} -d {GENOME_DIR}")
+
+    # freshen overwrite
+    UNZIP = split(f"unzip -o {ZIP} -d {GENOME_DIR}")
+
+    NESTED_DATA_DIR = GENOME_DIR / "ncbi_dataset" / "data" / GENOME
+
+    TO_RM = (ZIP, GENOME_DIR / "README.md", GENOME_DIR / "ncbi_dataset")
 
     if DEBUG:
-        ic(GENOME_DIR)
-        ic(ZIP)
-        ic(INCLUDE)
-        ic(DATASETS)
-        ic(UNZIP)
+        ic(INCLUDE, GENOME_DIR, ZIP, DATASETS, UNZIP, NESTED_DATA_DIR, TO_RM)
 
     if not DRY:
         GENOME_DIR.mkdir(exist_ok=True)
@@ -90,11 +94,23 @@ if __name__ == "__main__":
 
         sp.run(UNZIP, check=True)
 
-        # remames
-        # removes
+        for data_file in NESTED_DATA_DIR.iterdir():
+            shutil.copy(data_file, GENOME_DIR)
+
+        # for rm_target in TO_RM:
+        #     shutil.rmtree(rm_target)
 
     else:
         print("DRY RUN\nActions that would've run:\n")
+
         print(f"mkdir -p {GENOME_DIR}")
+
         print(join(DATASETS))
+
         print(join(UNZIP))
+
+        for data_file in NESTED_DATA_DIR.iterdir():
+            print(f"mv {data_file} {GENOME_DIR}")
+
+        for rm_target in TO_RM:
+            print(f"rm -r {rm_target}")
