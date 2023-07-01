@@ -1,22 +1,23 @@
 IN_GENOMES = "input_genomes.txt"
 IN_PFAMS = "input_pfams.txt"
 
-rule all:
-    shell:
-        "bat Snakefile && "
-        "cat Snakefile"
+GENOMES_DIR = "1-genomes"
 
-# Read input genomes
 with open(IN_GENOMES , "r") as file:
     GENOMES = []
     for line in file:
         GENOMES.append(line.strip())
 
+rule all:
+    input:
+        [f"{GENOMES_DIR}/{genome}/{genome}.zip" for genome in GENOMES]
+
+
 rule download_genomes:
     input:
         "input_genomes.txt"
     output:
-        "{genome}/{genome}.zip"
+        ozip="1-genomes/{genome}/{genome}.zip"
     shell:
-        "mkdir -p {wildcards.genome} && "
-        "datasets download genome accession {wildcards.genome} --filename {wildcards.genome}/{wildcards.genome}.zip --include protein"
+        "mkdir -p 1-genomes/{wildcards.genome} && "
+        "datasets download genome accession {wildcards.genome} --filename {output.ozip} --include protein"
