@@ -1,47 +1,31 @@
-#+title: Pond
+* Filter by Pfam
 
+** Input
+*** A list of /Pfams/ on ~input_pfams.txt~
+Using their /InterPro IDs/,
+one per line.
 
-* dir structure
+Example: /IPR006531/
+*** A list of /genomes/ on ~input_genomes.txt~
+Using their /NCBI RefSeq assembly IDs/,
+one per line.
 
-** ~target_genomes.txt~
-** ~filter_ids.txt~
-** genomes/
-*** g1/
-**** ~g1.faa~
-**** ~g1.filtered.faa~
-**** ~.other~
-**** iscan_pfam/
-***** ~.xml~
-***** ~.tsv~
-***** ~.other~
-**** iscan_all/
-***** ~.xml~
-***** ~.tsv~
-***** ~.other~
-other formats are hidden using a leading ~.~
-** scripts/
+Example: /GCF_024145975.1/
 
+** Output
+*** /fasta files/ of matching proteins
 
-* manually running the all anotation
+* Run
 
 #+begin_src shell
-sudo swapoff -a # bye swap
-fd -HI 'filtered.faa' | parallel --dry-run -j 6 scripts/3-annotate.sh {} {//}/iscan_all/ 7 FALSE
+snakemake --cores `nproc --all`
 #+end_src
 
+* Install
 
-
-* manually running the filter
-
-#+begin_src shell
-GENOME="GCF_001993155.1" && scripts/write_any.R "genomes/$GENOME/iscan_pfam/$GENOME.faa.tsv" filter_ids.txt "genomes/$GENOME/$GENOME.faa"
-
-fasta_grep --tab=genomes/GCF_001993155.1/iscan_pfam/GCF_001993155.1.faa.tsv.hits genomes/GCF_001993155.1/GCF_001993155.1.faa >| genomes/GCF_001993155.1/GCF_001993155.1.filtered.faa
-#+end_src
-
-* manually hidding the files
-
-#+begin_src shell
-fd iscan | parallel --dry-run mv {} {//}/iscan_pfam
-fd '\.faa\.' */iscan* | sed '/xml/ d; /tsv/ d' | parallel --dry-run mv {} {//}/.{/}
-#+end_src
+* Dependencies
+** interproscan.sh
+** ncbi-datasets-cli
+** snakemake
+** tidyverse
+** seqinr
