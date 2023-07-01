@@ -1,7 +1,5 @@
 #+title: Filter by Pfam
 
-[[img:filter_by_pfam.jpg][logo]]
-
 * Filter by Pfam
 ** Input
 *** A list of /Pfams/ on ~input_pfams.txt~
@@ -26,7 +24,6 @@ snakemake --cores `nproc --all`
 #+end_src
 
 * Install
-
 
 * Dependencies
 ** interproscan.sh
