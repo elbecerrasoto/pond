@@ -17,7 +17,7 @@ rule download_genomes:
     input:
         "input_genomes.txt"
     output:
-        ozip="1-genomes/{genome}/{genome}.zip"
+        ozip = GENOMES_DIR + "/{genome}/{genome}.zip"
     shell:
-        "mkdir -p 1-genomes/{wildcards.genome} && "
+        "mkdir -p {GENOMES_DIR}/{wildcards.genome} && "
         "datasets download genome accession {wildcards.genome} --filename {output.ozip} --include protein"
