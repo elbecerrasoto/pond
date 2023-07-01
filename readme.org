@@ -1,25 +1,23 @@
-#+title: Filter by Pfam
-
 * Filter by Pfam
+
 ** Input
 *** A list of /Pfams/ on ~input_pfams.txt~
 Using their /InterPro IDs/,
 one per line.
 
 Example: /IPR006531/
-
 *** A list of /genomes/ on ~input_genomes.txt~
 Using their /NCBI RefSeq assembly IDs/,
 one per line.
 
 Example: /GCF_024145975.1/
+
 ** Output
 *** /fasta files/ of matching proteins
 
 * Run
 
 #+begin_src shell
-# edit your cores number
 snakemake --cores `nproc --all`
 #+end_src
 
@@ -30,3 +28,4 @@ snakemake --cores `nproc --all`
 ** ncbi-datasets-cli
 ** snakemake
 ** tidyverse
+** seqinr
