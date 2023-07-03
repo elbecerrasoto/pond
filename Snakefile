@@ -20,4 +20,4 @@ rule download_genomes:
         ozip = GENOMES_DIR + "/{genome}/{genome}.zip"
     shell:
         "mkdir -p {GENOMES_DIR}/{wildcards.genome} && "
-        "datasets download genome accession {wildcards.genome} --filename {output.ozip} --include protein"
+        "datasets download genome accession {wildcards.genome} --filename {output.ozip} --include protein,genome,gff3"
