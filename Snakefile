@@ -19,18 +19,17 @@ rule download_genomes:
     input:
         "input_genomes.txt",
     output:
-        ozip = "{GENOME_DIR}/{genome}/{genome}.zip",
+        "{GENOME_DIR}/{genome}/{genome}.zip",
     shell:
         "mkdir -p {GENOMES_DIR}/{wildcards.genome} && "
-        "datasets download genome accession {wildcards.genome} --filename {output.ozip} --include protein,genome,gff3"
+        "datasets download genome accession {wildcards.genome} --filename {output} --include protein,genome,gff3"
 
 
 rule unzip_genomes:
     input:
         ozip = "{GENOME_DIR}/{genome}/{genome}.zip",
     output:
-        faa = "{GENOME_DIR}/{genome}/{genome}.faa",
-        fna = "{GENOME_DIR}/{genome}/{genome}.fna",
-        gff = "{GENOME_DIR}/{genome}/{genome}.gff",
+        directory("{GENOME_DIR}/{genome}/ncbi_dataset"),
+        "{GENOME_DIR}/{genome}/README.md",
     shell:
-        "touch {output.faa} {output.fna} {output.gff}"
+        "unzip -o {input} -d {GENOMES_DIR}/{wildcards.genome}"
