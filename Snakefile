@@ -19,24 +19,30 @@ rule download_genomes:
     input:
         "input_genomes.txt",
     output:
-        temp("{GENOME_DIR}/{genome}/{genome}.zip"),
+        "{GENOMES_DIR}/{genome}/{genome}.zip",
     shell:
         """
         mkdir -p {GENOMES_DIR}/{wildcards.genome}
-        cp bak_1-genomes/{wildcards.genome}/{wildcards.genome}.zip  {GENOMES_DIR}/{wildcards.genome}/{wildcards.genome}.zip
+
+        cp bak_1-genomes/{wildcards.genome}/{wildcards.genome}.zip \
+           {GENOMES_DIR}/{wildcards.genome}/{wildcards.genome}.zip
+
         # datasets download genome accession {wildcards.genome} --filename {output} --include protein,genome,gff3
         """
 
 
 rule unzip_genomes:
     input:
-        "{GENOME_DIR}/{genome}/{genome}.zip",
+        "{GENOMES_DIR}/{genome}/{genome}.zip",
     output:
-        temp(directory("{GENOME_DIR}/{genome}/ncbi_dataset")),
-        temp("{GENOME_DIR}/{genome}/README.md"),
+        "{GENOMES_DIR}/{genome}/protein.faa",
     shell:
-        "unzip -o {input} -d {GENOMES_DIR}/{wildcards.genome}"
+        """
+        unzip -o {input} -d {GENOMES_DIR}/{wildcards.genome}
 
+        mv {GENOMES_DIR}/{wildcards.genome}/ncbi_dataset/data/{wildcards.genome}/* \
+           {GENOMES_DIR}/{wildcards.genome}
 
-#rule rename_genomes:
-#    input:
+        rm -r {GENOMES_DIR}/{wildcards.genome}/ncbi_dataset/ \
+              {GENOMES_DIR}/{wildcards.genome}/README.md
+        """
