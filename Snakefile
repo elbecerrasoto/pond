@@ -55,17 +55,18 @@ rule unzip_genomes:
         """
 
 
-# rule annotate_pfams:
-#     input:
-#         rules.unzip_genomes.output.faa
-#     output:
-#         "PFAMS_DIR/{genome}/rules",
-#     shell:
-#         """
-#         mkdir -p {PFAMS_DIR}
-#         interproscan.sh --applications Pfam \
-#                         --formats TSV, XML \
-#                         --input {input} \
-#                         --output-dir {PFAMS_DIR} \
-#                         --cpu 12 \
-#         """
+rule annotate_pfams:
+    input:
+        rules.unzip_genomes.output.faa,
+    output:
+        PFAMS_DIR + "/{genome}.faa.xml",
+    shell:
+        """
+        mkdir -p {PFAMS_DIR}
+        interproscan.sh --applications Pfam \
+                        --formats TSV, XML \
+                        --input {input} \
+                        --output-dir {PFAMS_DIR} \
+                        --cpu 12 \
+                        --disable-precalc
+        """
