@@ -21,13 +21,15 @@ rule download_genomes:
     output:
         "{GENOME_DIR}/{genome}/{genome}.zip",
     shell:
-        "mkdir -p {GENOMES_DIR}/{wildcards.genome} && "
-        "datasets download genome accession {wildcards.genome} --filename {output} --include protein,genome,gff3"
+        """
+        mkdir -p {GENOMES_DIR}/{wildcards.genome}
+        datasets download genome accession {wildcards.genome} --filename {output} --include protein,genome,gff3
+        """
 
 
 rule unzip_genomes:
     input:
-        ozip = "{GENOME_DIR}/{genome}/{genome}.zip",
+        "{GENOME_DIR}/{genome}/{genome}.zip",
     output:
         directory("{GENOME_DIR}/{genome}/ncbi_dataset"),
         "{GENOME_DIR}/{genome}/README.md",
