@@ -19,11 +19,12 @@ rule download_genomes:
     input:
         "input_genomes.txt",
     output:
-        "{GENOME_DIR}/{genome}/{genome}.zip",
+        temp("{GENOME_DIR}/{genome}/{genome}.zip"),
     shell:
         """
         mkdir -p {GENOMES_DIR}/{wildcards.genome}
-        datasets download genome accession {wildcards.genome} --filename {output} --include protein,genome,gff3
+        cp bak_1-genomes/{wildcards.genome}/{wildcards.genome}.zip  {GENOMES_DIR}/{wildcards.genome}/{wildcards.genome}.zip
+        # datasets download genome accession {wildcards.genome} --filename {output} --include protein,genome,gff3
         """
 
 
@@ -31,7 +32,11 @@ rule unzip_genomes:
     input:
         "{GENOME_DIR}/{genome}/{genome}.zip",
     output:
-        directory("{GENOME_DIR}/{genome}/ncbi_dataset"),
-        "{GENOME_DIR}/{genome}/README.md",
+        temp(directory("{GENOME_DIR}/{genome}/ncbi_dataset")),
+        temp("{GENOME_DIR}/{genome}/README.md"),
     shell:
         "unzip -o {input} -d {GENOMES_DIR}/{wildcards.genome}"
+
+
+#rule rename_genomes:
+#    input:
