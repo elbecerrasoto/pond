@@ -2,7 +2,8 @@ IN_GENOMES = "input_genomes.txt"
 IN_PFAMS = "input_pfams.txt"
 
 GENOMES_DIR = "1-genomes"
-
+PFAM_DIR = "2-pfam"
+ANNOTATION_DIR = "3-annotation"
 
 with open(IN_GENOMES , "r") as file:
     GENOMES = []
@@ -35,7 +36,9 @@ rule unzip_genomes:
     input:
         "{GENOMES_DIR}/{genome}/{genome}.zip",
     output:
-        "{GENOMES_DIR}/{genome}/protein.faa",
+        faa = "{GENOMES_DIR}/{genome}/{genome}.faa",
+        fna = "{GENOMES_DIR}/{genome}/{genome}.fna",
+        gff = "{GENOMES_DIR}/{genome}/{genome}.gff",
     shell:
         """
         unzip -o {input} -d {GENOMES_DIR}/{wildcards.genome}
@@ -43,6 +46,15 @@ rule unzip_genomes:
         mv {GENOMES_DIR}/{wildcards.genome}/ncbi_dataset/data/{wildcards.genome}/* \
            {GENOMES_DIR}/{wildcards.genome}
 
+        mv {GENOMES_DIR}/{wildcards.genome}/*.faa {output.faa}
+        mv {GENOMES_DIR}/{wildcards.genome}/*.fna {output.fna}
+        mv {GENOMES_DIR}/{wildcards.genome}/*.gff {output.gff}
+
         rm -r {GENOMES_DIR}/{wildcards.genome}/ncbi_dataset/ \
               {GENOMES_DIR}/{wildcards.genome}/README.md
         """
+
+
+rule annotate_pfams:
+    shell:
+        "echo wip"
