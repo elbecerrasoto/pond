@@ -2,8 +2,8 @@ IN_GENOMES = "input_genomes.txt"
 IN_PFAMS = "input_pfams.txt"
 
 GENOMES_DIR = "1-genomes"
-PFAM_DIR = "2-pfam"
-ANNOTATION_DIR = "3-annotation"
+PFAMS_DIR = "2-pfams"
+ANNOTATIONS_DIR = "3-annotations"
 
 with open(IN_GENOMES , "r") as file:
     GENOMES = []
@@ -20,7 +20,7 @@ rule download_genomes:
     input:
         "input_genomes.txt",
     output:
-        "{GENOMES_DIR}/{genome}/{genome}.zip",
+        GENOMES_DIR + "/{genome}/{genome}.zip",
     shell:
         """
         mkdir -p {GENOMES_DIR}/{wildcards.genome}
@@ -36,9 +36,9 @@ rule unzip_genomes:
     input:
         rules.download_genomes.output,
     output:
-        faa = "{GENOMES_DIR}/{genome}/{genome}.faa",
-        fna = "{GENOMES_DIR}/{genome}/{genome}.fna",
-        gff = "{GENOMES_DIR}/{genome}/{genome}.gff",
+        faa = GENOMES_DIR + "/{genome}/{genome}.faa",
+        fna = GENOMES_DIR + "/{genome}/{genome}.fna",
+        gff = GENOMES_DIR + "/{genome}/{genome}.gff",
     shell:
         """
         unzip -o {input} -d {GENOMES_DIR}/{wildcards.genome}
@@ -55,6 +55,17 @@ rule unzip_genomes:
         """
 
 
-rule annotate_pfams:
-    shell:
-        "echo wip"
+# rule annotate_pfams:
+#     input:
+#         rules.unzip_genomes.output.faa
+#     output:
+#         "PFAMS_DIR/{genome}/rules",
+#     shell:
+#         """
+#         mkdir -p {PFAMS_DIR}
+#         interproscan.sh --applications Pfam \
+#                         --formats TSV, XML \
+#                         --input {input} \
+#                         --output-dir {PFAMS_DIR} \
+#                         --cpu 12 \
+#         """
