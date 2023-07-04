@@ -34,7 +34,7 @@ rule download_genomes:
 
 rule unzip_genomes:
     input:
-        "{GENOMES_DIR}/{genome}/{genome}.zip",
+        rules.download_genomes.output,
     output:
         faa = "{GENOMES_DIR}/{genome}/{genome}.faa",
         fna = "{GENOMES_DIR}/{genome}/{genome}.fna",
