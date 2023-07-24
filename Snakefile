@@ -34,15 +34,18 @@ rule all:
         [f"{GENOMES_DIR}/{genome}/{genome}.zip" for genome in GENOMES],
 
 
-rule download_iscan_test:
+rule download_iscan:
     output:
         gz = GZ,
         md5 = MD5,
     shell:
         """
-        mkdir -p {ISCAN_INSTALLATION_DIR}
-        wget -O {output.md5} {ISCAN_FTP_MD5}
-        touch {output.gz}
+        mkdir -p {ISCAN_INSTALLATION_DIR} # output dir
+
+        wget -O {output.md5} {ISCAN_FTP_MD5} # get signature
+        wget -O {output.gz} {ISCAN_FTP_GZ} # download iscan
+
+        md5sum -c {output.md5} # check signature
         """
 
 rule download_genomes:
