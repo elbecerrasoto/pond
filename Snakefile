@@ -43,13 +43,16 @@ rule unzip_genomes:
         """
         unzip -o {input} -d {GENOMES_DIR}/{wildcards.genome}
 
+        # Flatten ncbi dir structure
         mv {GENOMES_DIR}/{wildcards.genome}/ncbi_dataset/data/{wildcards.genome}/* \
            {GENOMES_DIR}/{wildcards.genome}
 
+        # Rename faa, fna, gff
         mv {GENOMES_DIR}/{wildcards.genome}/*.faa {output.faa}
         mv {GENOMES_DIR}/{wildcards.genome}/*.fna {output.fna}
         mv {GENOMES_DIR}/{wildcards.genome}/*.gff {output.gff}
 
+        # Remove crust
         rm -r {GENOMES_DIR}/{wildcards.genome}/ncbi_dataset/ \
               {GENOMES_DIR}/{wildcards.genome}/README.md
         """
