@@ -8,12 +8,7 @@ CLEAN=$(FAA) $(TSV) $(XML)
 
 
 .PHONY: test
-test: clean
-	snakemake --cores 1     $(TSV)
-
-
-.PHONY: keep
-keep:
+test:
 	snakemake --cores 1     $(TSV)
 
 
