@@ -8,21 +8,6 @@ PFAMS_DIR = "2-pfams"
 ANNOTATIONS_DIR = "3-annotations"
 
 
-# iscan globals
-ISCAN_VERSION = "5.63-95.0"
-ISCAN_INSTALLATION_DIR = Path(f"{SCRIPTS_DIR}/iscan")
-
-# remotes
-ISCAN_FTP = f"https://ftp.ebi.ac.uk/pub/databases/interpro/iprscan/5/{ISCAN_VERSION}"
-ISCAN_FTP_GZ = f"{ISCAN_FTP}/interproscan-{ISCAN_VERSION}-64-bit.tar.gz"
-ISCAN_FTP_MD5 = f"{ISCAN_FTP_GZ}.md5"
-
-# local
-MD5 = ISCAN_INSTALLATION_DIR / Path(ISCAN_FTP_MD5).name
-GZ = ISCAN_INSTALLATION_DIR / Path(ISCAN_FTP_GZ).name
-ISCAN_BIN = ISCAN_INSTALLATION_DIR / f"interproscan-{ISCAN_VERSION}/interproscan.sh"
-
-
 with open(IN_GENOMES , "r") as file:
     GENOMES = []
     for line in file:
@@ -31,22 +16,8 @@ with open(IN_GENOMES , "r") as file:
 
 rule all:
     input:
-        [f"{GENOMES_DIR}/{genome}/{genome}.zip" for genome in GENOMES],
+        PFAMS_DIR + "/GCF_001991475.1.faa.tsv"
 
-
-rule download_iscan:
-    output:
-        gz = GZ,
-        md5 = MD5,
-    shell:
-        """
-        mkdir -p {ISCAN_INSTALLATION_DIR} # output dir
-
-        wget -O {output.md5} {ISCAN_FTP_MD5} # get signature
-        wget -O {output.gz} {ISCAN_FTP_GZ} # download iscan
-
-        md5sum -c {output.md5} # check signature
-        """
 
 rule download_genomes:
     input:
@@ -92,6 +63,7 @@ rule annotate_pfams:
         rules.unzip_genomes.output.faa,
     output:
         PFAMS_DIR + "/{genome}.faa.xml",
+        PFAMS_DIR + "/{genome}.faa.tsv",
     shell:
         """
         mkdir -p {PFAMS_DIR}
