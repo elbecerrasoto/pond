@@ -62,15 +62,29 @@ rule annotate_pfams:
     input:
         rules.unzip_genomes.output.faa,
     output:
-        PFAMS_DIR + "/{genome}.faa.xml",
-        PFAMS_DIR + "/{genome}.faa.tsv",
+        PFAMS_DIR + "/{genome}.pfam.xml",
     shell:
         """
         mkdir -p {PFAMS_DIR}
         interproscan.sh --applications Pfam \
-                        --formats TSV, XML \
+                        --formats XML \
                         --input {input} \
-                        --output-dir {PFAMS_DIR} \
+                        --outfile {output} \
                         --cpu 12 \
                         --disable-precalc
+        """
+
+
+
+rule annotate_pfams_tsv:
+    input:
+        rules.annotate_pfams.output,
+    output:
+        Path(rules.annotate_pfams.output[0]).with_suffix(".tsv"),
+    shell:
+        """
+        interproscan.sh --mode convert \
+                        --formats TSV \
+                        --input {input} \
+                        --outfile {output} \
         """
