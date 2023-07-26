@@ -1,15 +1,27 @@
+GENOME=GCF_001991475.1
+
+FAA=1-genomes/$(GENOME).faa
+TSV=2-pfams/$(GENOME).faa.tsv
+XML=2-pfams/$(GENOME).faa.xml
+
+CLEAN=$(FAA) $(TSV) $(XML)
+
+
 .PHONY: test
-test:
-	snakemake --cores 1 2-pfams/test.faa.tsv
-	rm 2-pfams/test.faa.tsv
+test: clean
+	snakemake --cores 1     $(TSV)
 
 
-.PHONY: test_download
-test_download:
-	snakemake --cores 1 1-genomes/GCF_001991475.1/GCF_001991475.1.faa
-	rm -r 1-genomes/GCF_001991475.1
+.PHONY: keep
+keep:
+	snakemake --cores 1     $(TSV)
 
-.PHONY: test_heavy
-test_heavy: test_heavy
-	snakemake --cores 1  2-pfams/GCF_001991475.1.faa.tsv
-	rm 2-pfams/GCF_001991475.1.faa.tsv
+
+.PHONY: dry
+dry:
+	snakemake --cores 1 -np $(TSV)
+
+
+.PHONY: clean
+clean:
+	rm -rf $(CLEAN)
