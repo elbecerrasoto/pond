@@ -16,7 +16,7 @@ with open(IN_GENOMES , "r") as file:
 
 rule all:
     input:
-        PFAMS_DIR + "/GCF_001991475.1.faa.tsv"
+        PFAMS_DIR + "/GCF_001991475.1.pfam.tsv"
 
 
 rule download_genomes:
