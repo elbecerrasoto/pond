@@ -1,6 +1,11 @@
 #!/usr/bin/env python3
 
+# dependencies
+# aria2
+
 from pathlib import Path
+from subprocess import run
+from shlex import split, join
 
 # iscan globals
 ISCAN_VERSION = "5.63-95.0"
@@ -17,14 +22,12 @@ GZ = ISCAN_INSTALLATION_DIR / Path(ISCAN_FTP_GZ).name
 ISCAN_BIN = ISCAN_INSTALLATION_DIR / f"interproscan-{ISCAN_VERSION}/interproscan.sh"
 
 
-print(ISCAN_BIN)
+if __name__ == "__main__":
 
-from subprocess import run
-from shlex import split, join
+    cmd_aria2 = split(
+        f"aria2c --dir {ISCAN_INSTALLATION_DIR} --continue=true --split 12 --max-connection-per-server=16 --min-split-size=1M {ISCAN_FTP_MD5}"
+    )
 
-cmd_aria2 = split(
-    f"aria2c --continue=true --split 12 --max-connection-per-server=16 --min-split-size=1M {ISCAN_FTP_MD5}"
-)
+    print(f"Running \n{join(cmd_aria2)}")
 
-print(f"Running \n{join(cmd_aria2)}")
-run(cmd_aria2, check=True)
+    run(cmd_aria2, check=True)
