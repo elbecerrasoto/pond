@@ -2,14 +2,17 @@
 
 # dependencies
 # aria2
+# Java JDK/JRE version 11
 
 from pathlib import Path
+import os
 
 DRY = True
 
 # iscan globals
 ISCAN_VERSION = "5.63-95.0"
 ISCAN_INSTALLATION_DIR = Path("/usr/share/interproscan")
+ISCAN_INSTALLATION_BIN = Path("/usr/bin/interproscan.sh")
 
 # remotes
 ISCAN_FTP = f"https://ftp.ebi.ac.uk/pub/databases/interpro/iprscan/5/{ISCAN_VERSION}"
@@ -19,7 +22,8 @@ ISCAN_FTP_MD5 = f"{ISCAN_FTP_GZ}.md5"
 # local
 MD5 = ISCAN_INSTALLATION_DIR / Path(ISCAN_FTP_MD5).name
 GZ = ISCAN_INSTALLATION_DIR / Path(ISCAN_FTP_GZ).name
-ISCAN_BIN = ISCAN_INSTALLATION_DIR / f"interproscan-{ISCAN_VERSION}/interproscan.sh"
+ISCAN_DIR = ISCAN_INSTALLATION_DIR / f"interproscan-{ISCAN_VERSION}"
+ISCAN_BIN = ISCAN_DIR / "interproscan.sh"
 
 
 def run(cmd: str, dry: bool = False):
@@ -33,6 +37,7 @@ def run(cmd: str, dry: bool = False):
 
 
 if __name__ == "__main__":
+
     # create download directory
     if not DRY:
         ISCAN_INSTALLATION_DIR.mkdir(parents=True, exist_ok=True)
@@ -47,5 +52,25 @@ if __name__ == "__main__":
 
         run(cmd, dry=DRY)
 
-    # check md5sum
+
+        # check md5sum
     run(f"md5sum -c {MD5}", dry=DRY)
+
+
+    # untar
+    run(f"tar -xf {GZ}", dry=DRY)
+
+
+    # setup
+    if not DRY:
+        os.chdir(ISCAN_DIR)
+    run(f"python3 setup.py -f interproscan.properties", dry=DRY)
+
+
+    # create link
+    if not DRY:
+        ISCAN_INSTALLATION_BIN.symlink_to(ISCAN_BIN)
+
+
+    # test
+    run(f"interproscan.sh -i test_all_appl.fasta -f tsv", dry=DRY)
