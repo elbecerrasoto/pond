@@ -22,7 +22,7 @@ GZ = ISCAN_INSTALLATION_DIR / Path(ISCAN_FTP_GZ).name
 ISCAN_BIN = ISCAN_INSTALLATION_DIR / f"interproscan-{ISCAN_VERSION}/interproscan.sh"
 
 
-def run(cmd: str, dry: bool=False):
+def run(cmd: str, dry: bool = False):
     import subprocess as sp
     from shlex import split
 
@@ -31,16 +31,19 @@ def run(cmd: str, dry: bool=False):
     if not dry:
         sp.run(split(cmd), check=True)
 
-if __name__ == "__main__":
 
+if __name__ == "__main__":
     # create download directory
     if not DRY:
         ISCAN_INSTALLATION_DIR.mkdir(parents=True, exist_ok=True)
 
     # download GZ
     for ftp_target in (ISCAN_FTP_MD5, ISCAN_FTP_GZ):
-
-        cmd = f"aria2c --dir {ISCAN_INSTALLATION_DIR} --continue=true --split 12 --max-connection-per-server=16 --min-split-size=1M {ftp_target}"
+        cmd = (
+            f"aria2c --dir {ISCAN_INSTALLATION_DIR}"
+            "--continue=true --split 12 --max-connection-per-server=16 --min-split-size=1M "
+            f" {ftp_target}"
+        )
 
         run(cmd, dry=DRY)
 
