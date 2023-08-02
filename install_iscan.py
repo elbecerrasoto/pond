@@ -1,13 +1,16 @@
 #!/usr/bin/env python3
 
-# dependencies
-# aria2
-# Java JDK/JRE version 11
 
 from pathlib import Path
 import os
+import shutil
 
+# dry run
 DRY = True
+
+# dependencies
+ARIA2C = shutil.which("aria2c")
+JAVA = shutil.which("java")
 
 # iscan globals
 ISCAN_VERSION = "5.63-95.0"
@@ -37,6 +40,11 @@ def run(cmd: str, dry: bool = False):
 
 
 if __name__ == "__main__":
+    # check dependencies
+    if ARIA2C is None or JAVA is None:
+        print("Missing aria2c or java binaries")
+        print("Execution halted")
+        quit()
 
     # create download directory
     if not DRY:
@@ -52,25 +60,20 @@ if __name__ == "__main__":
 
         run(cmd, dry=DRY)
 
-
         # check md5sum
     run(f"md5sum -c {MD5}", dry=DRY)
 
-
     # untar
     run(f"tar -xf {GZ}", dry=DRY)
-
 
     # setup
     if not DRY:
         os.chdir(ISCAN_DIR)
     run(f"python3 setup.py -f interproscan.properties", dry=DRY)
 
-
     # create link
     if not DRY:
         ISCAN_INSTALLATION_BIN.symlink_to(ISCAN_BIN)
-
 
     # test
     run(f"interproscan.sh -i test_all_appl.fasta -f tsv", dry=DRY)
