@@ -9,3 +9,4 @@ dependencies:
     - aria2
     - r-tidyverse
     - r-seqinr
+    - r-argparse
