@@ -26,7 +26,7 @@ snakemake --cores `nproc --all`
 #+begin_src shell
 mamba env create
 mamba activate pond
-./install_iscan.py
+sudo ./install_iscan.py
 #+end_src
 
 * Dependencies
