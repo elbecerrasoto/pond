@@ -84,3 +84,7 @@ if __name__ == "__main__":
 
     # test
     run(f"interproscan.sh -i test_all_appl.fasta -f tsv", dry=DRY)
+
+    # set permissions
+    ISCAN_INSTALLATION_DIR.chmod(0o755)
+    ISCAN_DIR.chmod(0o755)
