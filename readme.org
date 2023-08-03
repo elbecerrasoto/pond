@@ -23,9 +23,15 @@ snakemake --cores `nproc --all`
 
 * Install
 
+#+begin_src shell
+mamba env create
+mamba activate pond
+./install_iscan.py
+#+end_src
+
 * Dependencies
-** interproscan.sh
-** ncbi-datasets-cli
-** snakemake
-** tidyverse
-** seqinr
+** ~mamba~ or ~conda~ package manager
+
+I recommend installing mamba via [[https://github.com/conda-forge/miniforge][miniforge]].
+
+For an explicit dependency list check [[environment.yml]].
