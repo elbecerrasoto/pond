@@ -1,0 +1,11 @@
+name: pond
+channels:
+    - conda-forge
+    - bioconda
+dependencies:
+    - snakemake
+    - ncbi-datasets-cli
+    - openjdk
+    - aria2
+    - r-tidyverse
+    - r-seqinr
