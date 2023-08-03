@@ -6,7 +6,7 @@ import os
 import shutil
 
 # dry run
-DRY = True
+DRY = False
 
 # dependencies
 ARIA2C = shutil.which("aria2c")
@@ -40,6 +40,7 @@ def run(cmd: str, dry: bool = False):
 
 
 if __name__ == "__main__":
+
     # check dependencies
     if ARIA2C is None or JAVA is None:
         print("Missing aria2c or java binaries")
@@ -53,14 +54,20 @@ if __name__ == "__main__":
     # download GZ
     for ftp_target in (ISCAN_FTP_MD5, ISCAN_FTP_GZ):
         cmd = (
-            f"aria2c --dir {ISCAN_INSTALLATION_DIR}"
-            "--continue=true --split 12 --max-connection-per-server=16 --min-split-size=1M "
-            f" {ftp_target}"
+            "aria2c "
+            f"--dir {ISCAN_INSTALLATION_DIR} "
+            "--continue=true "
+            "--split 12 "
+            "--max-connection-per-server=16 "
+            "--min-split-size=1M "
+            f"{ftp_target}"
         )
 
         run(cmd, dry=DRY)
 
-        # check md5sum
+    # check md5sum
+    if not DRY:
+        os.chdir(ISCAN_INSTALLATION_DIR)
     run(f"md5sum -c {MD5}", dry=DRY)
 
     # untar
