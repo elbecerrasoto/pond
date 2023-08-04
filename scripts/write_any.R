@@ -70,6 +70,8 @@ hits <- hits[[1]]
 faa <- read.fasta(FAA, seqtype="AA", forceDNAtolower = FALSE, strip.desc = TRUE)
 faa_hits <- faa[hits]
 
-faa_hits_headers = map(faa_hits, attr, which = "Annot")
+faa_hits_headers <- map(faa_hits, attr, which = "Annot") %>%
+  str_c(paste0(" ", "source=", basename(FAA)))
+
 # nbchar = 80 to make it equal to ncbi source
 write.fasta(faa_hits, names = faa_hits_headers, nbchar = 80, file.out = "test.faa")
