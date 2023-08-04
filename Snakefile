@@ -5,7 +5,7 @@ SCRIPTS_DIR = "scripts"
 
 GENOMES_DIR = "1-genomes"
 PFAMS_DIR = "2-pfams"
-ANNOTATIONS_DIR = "3-annotations"
+FILTERED_DIR = "3-filtered"
 
 
 with open(IN_GENOMES , "r") as file:
@@ -75,7 +75,6 @@ rule annotate_pfams:
         """
 
 
-
 rule annotate_pfams_tsv:
     input:
         rules.annotate_pfams.output,
@@ -87,4 +86,21 @@ rule annotate_pfams_tsv:
                         --formats TSV \
                         --input {input} \
                         --outfile {output} \
+        """
+
+
+rule filter_genomes:
+    input:
+        tsv = rules.annotate_pfams_tsv.output,
+        ids = IN_PFAMS,
+        faa = rules.unzip_genomes.output.faa,
+    output:
+        FILTERED_DIR + "/{genome}.filtered.faa",
+    shell:
+        """
+        mkdir -p {FILTERED_DIR}
+        scripts/filter --tsv {input.tsv} \
+                       --ids {input.ids} \
+                       --out {output} \
+                             {input.faa}
         """
