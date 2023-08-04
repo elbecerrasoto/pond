@@ -1,4 +1,3 @@
-*genomes/
 .snakemake/
 
 # Byte-compiled / optimized / DLL files

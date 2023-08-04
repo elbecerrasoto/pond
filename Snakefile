@@ -1,9 +1,12 @@
 IN_GENOMES = "input_genomes.txt"
 IN_PFAMS = "input_pfams.txt"
 
+SCRIPTS_DIR = "scripts"
+
 GENOMES_DIR = "1-genomes"
 PFAMS_DIR = "2-pfams"
-ANNOTATIONS_DIR = "3-annotations"
+FILTERED_DIR = "3-filtered"
+
 
 with open(IN_GENOMES , "r") as file:
     GENOMES = []
@@ -13,7 +16,7 @@ with open(IN_GENOMES , "r") as file:
 
 rule all:
     input:
-        [f"{GENOMES_DIR}/{genome}/{genome}.zip" for genome in GENOMES],
+        PFAMS_DIR + "/GCF_001991475.1.pfam.tsv"
 
 
 rule download_genomes:
@@ -25,10 +28,7 @@ rule download_genomes:
         """
         mkdir -p {GENOMES_DIR}/{wildcards.genome}
 
-        cp bak_1-genomes/{wildcards.genome}/{wildcards.genome}.zip \
-           {GENOMES_DIR}/{wildcards.genome}/{wildcards.genome}.zip
-
-        # datasets download genome accession {wildcards.genome} --filename {output} --include protein,genome,gff3
+        datasets download genome accession {wildcards.genome} --filename {output} --include protein,genome,gff3
         """
 
 
@@ -43,13 +43,16 @@ rule unzip_genomes:
         """
         unzip -o {input} -d {GENOMES_DIR}/{wildcards.genome}
 
+        # Flatten ncbi dir structure
         mv {GENOMES_DIR}/{wildcards.genome}/ncbi_dataset/data/{wildcards.genome}/* \
            {GENOMES_DIR}/{wildcards.genome}
 
+        # Rename faa, fna, gff
         mv {GENOMES_DIR}/{wildcards.genome}/*.faa {output.faa}
         mv {GENOMES_DIR}/{wildcards.genome}/*.fna {output.fna}
         mv {GENOMES_DIR}/{wildcards.genome}/*.gff {output.gff}
 
+        # Remove crust
         rm -r {GENOMES_DIR}/{wildcards.genome}/ncbi_dataset/ \
               {GENOMES_DIR}/{wildcards.genome}/README.md
         """
@@ -59,14 +62,45 @@ rule annotate_pfams:
     input:
         rules.unzip_genomes.output.faa,
     output:
-        PFAMS_DIR + "/{genome}.faa.xml",
+        PFAMS_DIR + "/{genome}.pfam.xml",
     shell:
         """
         mkdir -p {PFAMS_DIR}
         interproscan.sh --applications Pfam \
-                        --formats TSV, XML \
+                        --formats XML \
                         --input {input} \
-                        --output-dir {PFAMS_DIR} \
+                        --outfile {output} \
                         --cpu 12 \
                         --disable-precalc
+        """
+
+
+rule annotate_pfams_tsv:
+    input:
+        rules.annotate_pfams.output,
+    output:
+        Path(rules.annotate_pfams.output[0]).with_suffix(".tsv"),
+    shell:
+        """
+        interproscan.sh --mode convert \
+                        --formats TSV \
+                        --input {input} \
+                        --outfile {output} \
+        """
+
+
+rule filter_genomes:
+    input:
+        tsv = rules.annotate_pfams_tsv.output,
+        ids = IN_PFAMS,
+        faa = rules.unzip_genomes.output.faa,
+    output:
+        FILTERED_DIR + "/{genome}.filtered.faa",
+    shell:
+        """
+        mkdir -p {FILTERED_DIR}
+        scripts/filter --tsv {input.tsv} \
+                       --ids {input.ids} \
+                       --out {output} \
+                             {input.faa}
         """
