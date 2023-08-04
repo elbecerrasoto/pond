@@ -9,28 +9,26 @@ parser <- ArgumentParser(description="Print cmd to extract proteins from a FASTA
                                       the filteriing is done\n
                                       using IntreproScan 5 TSV and a TXT of Interpro IDs")
 
-parser$add_argument("tsv", type="character", nargs=1,
+parser$add_argument("--tsv", type="character", nargs=1,
                     help="File containing the annotation from InterProScan 5 on TSV")
 
-
-parser$add_argument("ids", type="character", nargs=1,
+parser$add_argument("--ids", type="character", nargs=1,
                     help="File of the interpro IDs to filter,\n
                     one interpro ID per line, use '#' to comment\n ")
 
+parser$add_argument("--out", "-o", type="character", nargs=1,
+                    help="Output, filtered fasta")
+
 parser$add_argument("faa", type="character", nargs=1,
-                    help="FASTA aminoacid to filter")
+                    help="FASTA amino acid to filter")
 
-# ARGS <- parser$parse_args()
-
-
-# TSV <- ARGS$tsv
-# IDS <- ARGS$ids
-# FAA <- ARGS$faa
+ARGS <- parser$parse_args()
 
 
-TSV <- "../2-pfams/GCF_001991475.1.pfam.tsv"
-IDS <-  "../input_pfams.txt"
-FAA <- "../1-genomes/GCF_001991475.1/GCF_001991475.1.faa"
+TSV <- ARGS$tsv
+IDS <- ARGS$ids
+FAA <- ARGS$faa
+OUT <- ARGS$out
 
 
 HEADER <- c("protein",
@@ -74,4 +72,4 @@ faa_hits_headers <- map(faa_hits, attr, which = "Annot") %>%
   str_c(paste0(" ", "source=", basename(FAA)))
 
 # nbchar = 80 to make it equal to ncbi source
-write.fasta(faa_hits, names = faa_hits_headers, nbchar = 80, file.out = "test.faa")
+write.fasta(faa_hits, names = faa_hits_headers, nbchar = 80, file.out = OUT)
