@@ -15,8 +15,12 @@ with open(IN_GENOMES , "r") as file:
         GENOMES.append(line.strip())
 
 
-# comment this line when ready for full analysis
-# GENOMES = ["test1", "test2"]
+# demo for 3 in parallel
+ISCAN_THREADS = 4
+
+if len(GENOMES) > 3:
+    print("demo is only for 3 genomes")
+    quit()
 
 rule all:
     input:
@@ -67,7 +71,7 @@ rule annotate_pfams:
         rules.unzip_genomes.output.faa,
     output:
         PFAMS_DIR + "/{genome}.pfam.xml",
-    threads: 12
+    threads: ISCAN_THREADS
     shell:
         """
         mkdir -p {PFAMS_DIR}
