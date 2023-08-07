@@ -10,3 +10,4 @@ dependencies:
     - r-tidyverse
     - r-seqinr
     - r-argparse
+    - cd-hit
