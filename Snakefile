@@ -6,6 +6,7 @@ SCRIPTS_DIR = "scripts"
 GENOMES_DIR = "1-genomes"
 PFAMS_DIR = "2-pfams"
 FILTERED_DIR = "3-filtered"
+CDHIT_DIR = "4-cdhit"
 
 
 with open(IN_GENOMES , "r") as file:
@@ -114,9 +115,10 @@ rule gather_proteins:
     input:
         [f"{FILTERED_DIR}/{genome}.filtered.faa" for genome in GENOMES],
     output:
-        FILTERED_DIR + "/all.redundant.faa",
+        CDHIT_DIR + "/all.redundant.faa",
     shell:
         """
+        mkdir -p {CDHIT_DIR}
         cat {input} > {output}
         """
 
