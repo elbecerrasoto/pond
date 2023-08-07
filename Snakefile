@@ -14,9 +14,12 @@ with open(IN_GENOMES , "r") as file:
         GENOMES.append(line.strip())
 
 
+# comment this line when ready for full analysis
+GENOMES = ["test1", "test2"]
+
 rule all:
     input:
-        PFAMS_DIR + "/GCF_001991475.1.pfam.tsv"
+        FILTERED_DIR + "/all.faa"
 
 
 rule download_genomes:
@@ -105,3 +108,17 @@ rule filter_genomes:
                        --out {output} \
                              {input.faa}
         """
+
+
+rule gather_proteins:
+    input:
+        [f"{FILTERED_DIR}/{genome}.filtered.faa" for genome in GENOMES],
+    output:
+        FILTERED_DIR + "/all.redundant.faa",
+    shell:
+        """
+        cat {input} > {output}
+        """
+
+
+# rule reduce_proteins:
