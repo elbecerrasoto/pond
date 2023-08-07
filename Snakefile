@@ -20,7 +20,7 @@ GENOMES = ["test1", "test2"]
 
 rule all:
     input:
-        FILTERED_DIR + "/all.faa"
+        CDHIT_DIR + "/all.faa"
 
 
 rule download_genomes:
@@ -123,4 +123,12 @@ rule gather_proteins:
         """
 
 
-# rule reduce_proteins:
+rule reduce_proteins:
+    input:
+        rules.gather_proteins.output,
+    output:
+        CDHIT_DIR + "/all.faa"
+    shell:
+        """
+        cd-hit -i {input} -o {output}
+        """
