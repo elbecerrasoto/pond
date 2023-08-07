@@ -16,7 +16,7 @@ with open(IN_GENOMES , "r") as file:
 
 
 # comment this line when ready for full analysis
-GENOMES = ["test1", "test2"]
+# GENOMES = ["test1", "test2"]
 
 rule all:
     input:
