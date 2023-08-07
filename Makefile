@@ -1,3 +1,9 @@
+
+.PHONY: cenocepacia_genomes
+cenocepacia_genomes:
+	./1-get_pointers.sh 1000000
+	grep 'Burkholderia cenocepacia' burkholderia.tsv | cut -f 1 >| input_genomes.txt
+
 .PHONY: test
 test:
 	snakemake --core all
