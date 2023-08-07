@@ -5,17 +5,10 @@
 taxon='burkholderia' # genus
 taxon_metadata="${taxon}.tsv"
 
+
 # filter taxon
 filter='cenocepacia' # species
-n_samples="$1"
 pointers="${filter}.txt"
-
-if [[ "$#" != 1 ]]
-then
-    printf 'Provide n_samples\n' >&2
-    printf 'As first argument\n' >&2
-    exit 1
-fi
 
 
 function get_taxon ()
