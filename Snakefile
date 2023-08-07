@@ -63,6 +63,7 @@ rule annotate_pfams:
         rules.unzip_genomes.output.faa,
     output:
         PFAMS_DIR + "/{genome}.pfam.xml",
+    threads: 1
     shell:
         """
         mkdir -p {PFAMS_DIR}
@@ -70,7 +71,7 @@ rule annotate_pfams:
                         --formats XML \
                         --input {input} \
                         --outfile {output} \
-                        --cpu 12 \
+                        --cpu {threads} \
                         --disable-precalc
         """
 
