@@ -67,7 +67,7 @@ rule annotate_pfams:
         rules.unzip_genomes.output.faa,
     output:
         PFAMS_DIR + "/{genome}.pfam.xml",
-    threads: 1
+    threads: 12
     shell:
         """
         mkdir -p {PFAMS_DIR}
