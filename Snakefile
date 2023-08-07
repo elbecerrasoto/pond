@@ -6,7 +6,7 @@ SCRIPTS_DIR = "scripts"
 GENOMES_DIR = "1-genomes"
 PFAMS_DIR = "2-pfams"
 FILTERED_DIR = "3-filtered"
-CDHIT_DIR = "4-cdhit"
+ALL_DIR = "4-all"
 
 
 with open(IN_GENOMES , "r") as file:
@@ -24,8 +24,7 @@ if len(GENOMES) > 3:
 
 rule all:
     input:
-        CDHIT_DIR + "/all.faa"
-
+        ALL_DIR + "/all.faa.tsv",
 
 rule download_genomes:
     input:
@@ -119,10 +118,10 @@ rule gather_proteins:
     input:
         [f"{FILTERED_DIR}/{genome}.filtered.faa" for genome in GENOMES],
     output:
-        CDHIT_DIR + "/all.redundant.faa",
+        ALL_DIR + "/all.redundant.faa",
     shell:
         """
-        mkdir -p {CDHIT_DIR}
+        mkdir -p {ALL_DIR}
         cat {input} > {output}
         """
 
@@ -131,8 +130,39 @@ rule reduce_proteins:
     input:
         rules.gather_proteins.output,
     output:
-        CDHIT_DIR + "/all.faa"
+        ALL_DIR + "/all.faa"
     shell:
         """
         cd-hit -i {input} -o {output}
+        """
+
+
+rule annotate_all:
+    input:
+        rules.reduce_proteins.output,
+    output:
+        ALL_DIR + "/all.faa.xml",
+    threads: 12
+    shell:
+        """
+        mkdir -p {PFAMS_DIR}
+        interproscan.sh --formats XML \
+                        --input {input} \
+                        --outfile {output} \
+                        --cpu {threads} \
+                        --disable-precalc
+        """
+
+
+rule annotate_all_tsv:
+    input:
+        rules.annotate_all.output,
+    output:
+        Path(rules.annotate_all.output[0]).with_suffix(".tsv"),
+    shell:
+        """
+        interproscan.sh --mode convert \
+                        --formats TSV \
+                        --input {input} \
+                        --outfile {output} \
         """
