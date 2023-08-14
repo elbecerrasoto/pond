@@ -15,12 +15,10 @@ with open(IN_GENOMES , "r") as file:
         GENOMES.append(line.strip())
 
 
-# demo for 3 in parallel
-ISCAN_THREADS = 4
+# for running locally 2 iscan threads
+# around 20 GBs of RAM
+ISCAN_THREADS = 2
 
-if len(GENOMES) > 3:
-    print("demo is only for 3 genomes")
-    quit()
 
 rule all:
     input:
