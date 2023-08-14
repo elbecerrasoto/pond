@@ -1,3 +1,7 @@
+.PHONY: ptest
+ptest:
+	pytest --rootdir=. .tests/
+
 .PHONY: test
 test:
 	snakemake --core all
