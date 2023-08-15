@@ -22,3 +22,9 @@ dry:
 .PHONY: clean
 clean:
 	rm -rf 1-genomes/$(GENOME) temp 3-filtered 4-cdhit
+
+
+.PHONY: cenocepacia_genomes
+cenocepacia_genomes:
+	./1-get_pointers.sh 1000000
+	grep 'Burkholderia cenocepacia' burkholderia.tsv | cut -f 1 >| input_genomes.txt
